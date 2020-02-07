@@ -63,7 +63,7 @@ class NuPeakCalculator(object):
         in_data = self.prepare_data(idata)
         model_ind = np.where(np.sin(np.radians(dec))<sin_dec_bins)[0][0]
         out = self.__models[model_ind - 1].predict(in_data)[0]
-        out[1] = np.abs(out[1])
+        out[1] = np.exp(out[1])
         print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
         return out 
  
