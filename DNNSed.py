@@ -28,7 +28,10 @@ nu_bins = [0,1e9,5*1e9,1*1e10,7.5*1e10, 1*1e11, 2.5*1e11, 5*1e11, 1*1e12, 1*1e13
 sin_dec_bins = np.array([-1,-0.67, -0.42, -0.20, 0.02, 0.23, 0.45, 0.66,0.83, 1.])
 
 class NuPeakCalculator(object):
-    def __init__(self, model_path):
+    def __init__(self, model_path='None'):
+        if model_path == 'None':
+            dirname = os.path.dirname(__file__)
+            model_path = os.path.join(dirname, 'models/')
         self.__model_path = model_path
         self.__models = []
         for i in range(len(sin_dec_bins)-1):
