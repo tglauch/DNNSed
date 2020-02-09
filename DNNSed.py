@@ -28,21 +28,36 @@ nu_bins = [0,1e9,5*1e9,1*1e10,7.5*1e10, 1*1e11, 2.5*1e11, 5*1e11, 1*1e12, 1*1e13
 sin_dec_bins = np.array([-1,-0.67, -0.42, -0.20, 0.02, 0.23, 0.45, 0.66,0.83, 1.])
 
 class NuPeakCalculator(object):
-    def __init__(self, model_path='None'):
+    def __init__(self, model_path='None', dec=None):
         if model_path == 'None':
             dirname = os.path.dirname(__file__)
             model_path = os.path.join(dirname, 'models/')
         self.__model_path = model_path
-        self.__models = []
-        for i in range(len(sin_dec_bins)-1):
-            self.__models.append(load_model(os.path.join(model_path, 'dec_'+str(i)+'.h5'),
-                                           custom_objects={'gaussian_nll': gaussian_nll}))
+        self.__models = [ [] for i in range(len(sin_dec_bins)-1)]
+        if dec is None:
+            for i in range(len(sin_dec_bins)-1):
+                path = os.path.join(model_path, 'dec_'+str(i)+'.h5')
+                print('Load Model {}'.format(path))
+                self.__models[i] = load_model(path, custom_objects={'gaussian_nll': gaussian_nll})
+        else:
+            self.add_model(dec)
         return
 
+    def add_model(self, dec):
+        ind = self.get_model_pos_ind(dec)
+        path = os.path.join(self.__model_path, 'dec_'+str(ind)+'.h5')
+        print(print('Load Model {}'.format(path)))
+        self.__models[ind] = load_model(path, custom_objects={'gaussian_nll': gaussian_nll})
+        return
 
-
-    def prepare_data(self, sed, mask_catalog='DEBL'):
-        sed = sed[(sed['f2'] != sed['f3']) & (sed['f3']>0) & (sed['f4'] != mask_catalog)]
+    def prepare_data(self, sed, exclude_nu_band=[] ,mask_catalog=['DEBL']):
+        cat_nu_mask = np.array([True] * len(sed['f4']))
+        for i in range(len(sed['f4'])):
+            cat_bool = np.any([sed['f4'][i]==j for j in mask_catalog])
+            nu_bool = np.any([((sed['f0'][i]>j[0]) & (sed['f0'][i]<j[1])) for j in exclude_nu_band])
+            if np.any([cat_bool, nu_bool]):
+                cat_nu_mask[i] = False
+        sed = sed[(sed['f2'] != sed['f3']) & (sed['f3']>0) & cat_nu_mask]
         frequency = sed['f0']
         inds=np.sum(nu_bins<=frequency[:,np.newaxis], axis=1) - 1
         array=np.full(len(nu_bins)*2, 0.)
@@ -56,18 +71,28 @@ class NuPeakCalculator(object):
             array[i] = ret / 10.
             array[len(nu_bins)+i] =  np.var(np.log10(tarray)) /10.
             array[np.isnan(array)] = 0
-        return np.atleast_2d(array) #np.concatenate([array, np.log10(nu_bins[1:])])
+        return np.atleast_2d(array)
 
+    def get_model_pos_ind(self, dec):
+        return (np.where(sin_dec_bins < np.sin(np.radians(dec)))[0][-1])
 
-    def do_classification(self, sed_path, dec):
+    def do_classification(self, sed_path, dec, exclude_nu_band=[], mask_catalog=['DEBL'],
+                          return_sed=False):
         ''' dec in degrees '''
         idata = np.genfromtxt(sed_path, skip_header=4, usecols = [0,1,2,3,6],
                           dtype=[np.float, np.float, np.float, np.float, object])
-        in_data = self.prepare_data(idata)
-        model_ind = np.where(np.sin(np.radians(dec))<sin_dec_bins)[0][0]
-        out = self.__models[model_ind - 1].predict(in_data)[0]
+        in_data = self.prepare_data(idata, mask_catalog=mask_catalog,
+                                    exclude_nu_band=exclude_nu_band)
+        model_ind = self.get_model_pos_ind(dec)
+        if self.__models[model_ind] == []:
+            raise ValueError('Model not loaded')
+        else:
+            out = self.__models[model_ind].predict(in_data)[0]
         out[1] = np.exp(out[1])
         print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
-        return out 
- 
+        if return_sed:
+            return np.array([in_data[0][:len(nu_bins)], in_data[0][len(nu_bins):]]), out
+        else:
+            return out
+
 
