@@ -18,7 +18,7 @@ DNNSed is optimized for the usage with input files as produced by the VOU-Blazar
     Hz       erg/cm2/s     upper       lower        MJD         MJD  
 ```
 
-for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and Catalog must exist in the input file. After generation of the input file the nu-peak classification can be called as follows
+for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and catalog must exist in the input file. After generation of the input file the nu-peak classification can be called as follows
 
 ```
 from DNNSed import NuPeakCalculator
