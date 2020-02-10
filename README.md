@@ -10,7 +10,16 @@ The spectral energy distribution (SED) of blazars consinsts in an ideal case of 
 # How to install
 
 # How to use
+
+DNNSed is optimized for the usage with input files as produced by the VOU-Blazar Tool. The corresponding syntax is
+
 ```
+ Frequency     nufnu     nufnu unc.  nufnu unc. start time   end time   Catalog     Reference
+    Hz       erg/cm2/s     upper       lower        MJD         MJD  
+```
+
+for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and Catalog must exist in the input file.
+
 from DNNSed import NuPeakCalculator
 nu_peak_res = nu_peak.do_classification(sed_file_path, dec=src_dec,
                                         exclude_nu_band=[],
