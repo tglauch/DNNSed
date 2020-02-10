@@ -78,7 +78,7 @@ class NuPeakCalculator(object):
         return (np.where(sin_dec_bins < np.sin(np.radians(dec)))[0][-1])
 
     def do_classification(self, sed_path, dec, exclude_nu_band=[], mask_catalog=['DEBL'],
-                          return_sed=False):
+                          return_sed=False, verbose=True):
         ''' dec in degrees '''
         idata = np.genfromtxt(sed_path, skip_header=4, usecols = [0,1,2,3,6],
                           dtype=[np.float, np.float, np.float, np.float, object])
@@ -90,7 +90,8 @@ class NuPeakCalculator(object):
         else:
             out = self.__models[model_ind].predict(in_data)[0]
         out[1] = np.exp(out[1])
-        print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
+        if verbose:
+            print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
         if return_sed:
             return np.array([in_data[0][:len(nu_bins)-1], in_data[0][len(nu_bins)-1:]]), out
         else:
