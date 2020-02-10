@@ -52,6 +52,9 @@ class NuPeakCalculator(object):
         return
 
     def prepare_data(self, sed, exclude_nu_band=[], mask_catalog=['DEBL']):
+        print(sed['f4'])
+        if len(sed['f4']) == 0:
+            return None
         cat_nu_mask = np.array([True] * len(sed['f4']))
         for i in range(len(sed['f4'])):
             cat_bool = np.any([sed['f4'][i]==np.bytes_(j) for j in mask_catalog])
@@ -82,8 +85,12 @@ class NuPeakCalculator(object):
         ''' dec in degrees '''
         idata = np.genfromtxt(sed_path, skip_header=4, usecols = [0,1,2,3,6],
                           dtype=[np.float, np.float, np.float, np.float, object])
+        idata = np.atleast_2d(idata)
         in_data = self.prepare_data(idata, mask_catalog=mask_catalog,
                                     exclude_nu_band=exclude_nu_band)
+        if in_data is None:
+            return None
+
         model_ind = self.get_model_pos_ind(dec)
         if self.__models[model_ind] == []:
             warnings.warn("Model not yet loaded")
