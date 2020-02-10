@@ -5,7 +5,7 @@ import keras.backend as K
 from keras.models import load_model
 import keras.losses
 import os
-
+import warnings
 def gaussian_nll(ytrue, ypreds):
     n_dims = int(int(ypreds.shape[1])/2)
     mu = ypreds[:, 0:n_dims]
@@ -86,9 +86,10 @@ class NuPeakCalculator(object):
                                     exclude_nu_band=exclude_nu_band)
         model_ind = self.get_model_pos_ind(dec)
         if self.__models[model_ind] == []:
-            raise ValueError('Model not loaded')
-        else:
-            out = self.__models[model_ind].predict(in_data)[0]
+            warnings.warn("Model not yet loaded")
+            print('Trying to load model..')
+            self.add_model(dec)
+        out = self.__models[model_ind].predict(in_data)[0]
         out[1] = np.exp(out[1])
         if verbose:
             print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
