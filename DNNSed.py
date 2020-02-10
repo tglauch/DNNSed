@@ -20,10 +20,11 @@ def gaussian_nll(ytrue, ypreds):
     return K.mean(-log_likelihood)
 
 
-nu_bins = [0,1e9,5*1e9,1*1e10,7.5*1e10, 1*1e11, 2.5*1e11, 5*1e11, 1*1e12, 1*1e13, 5*1e13, 1.58*1e14 ,3*1e14,
+nu_bins = [0,1e9,5*1e9,1*1e10,7.5*1e10, 1.8*1e11, 5*1e11, 1e13, 5*1e13, 1.58*1e14 ,3*1e14,
            3.97*1e14, 5*1e14, 6.3*1e14, 7.94*1e14, 1*1e15, 1.25*1e15, 1.58*1e15, 5*1e15, 5*1e16, 1*1e17,
            1.58*1e17, 2.5*1e17, 3.16*1e17, 3.98*1e17, 6.3*1e17, 8*1e17,
            1.26*1e18, 2.5*1e18, 1*1e19, 1*1e23, 1e24, 1e25, 1e26]
+nu_bins = np.array(nu_bins)
 
 sin_dec_bins = np.array([-1,-0.67, -0.42, -0.20, 0.02, 0.23, 0.45, 0.66,0.83, 1.])
 
@@ -50,18 +51,18 @@ class NuPeakCalculator(object):
         self.__models[ind] = load_model(path, custom_objects={'gaussian_nll': gaussian_nll})
         return
 
-    def prepare_data(self, sed, exclude_nu_band=[] ,mask_catalog=['DEBL']):
+    def prepare_data(self, sed, exclude_nu_band=[], mask_catalog=['DEBL']):
         cat_nu_mask = np.array([True] * len(sed['f4']))
         for i in range(len(sed['f4'])):
-            cat_bool = np.any([sed['f4'][i]==j for j in mask_catalog])
+            cat_bool = np.any([sed['f4'][i]==np.bytes_(j) for j in mask_catalog])
             nu_bool = np.any([((sed['f0'][i]>j[0]) & (sed['f0'][i]<j[1])) for j in exclude_nu_band])
             if np.any([cat_bool, nu_bool]):
                 cat_nu_mask[i] = False
         sed = sed[(sed['f2'] != sed['f3']) & (sed['f3']>0) & cat_nu_mask]
         frequency = sed['f0']
         inds=np.sum(nu_bins<=frequency[:,np.newaxis], axis=1) - 1
-        array=np.full(len(nu_bins)*2, 0.)
-        for i in range(len(array)):
+        array=np.full((len(nu_bins)-1)*2, 0.)
+        for i in range(len(nu_bins)-1):
             tarray= sed['f1'][inds==i]
             if len(tarray)==0:
                 continue
@@ -69,7 +70,7 @@ class NuPeakCalculator(object):
             if not np.isfinite(ret):
                 continue
             array[i] = ret / 10.
-            array[len(nu_bins)+i] =  np.var(np.log10(tarray)) /10.
+            array[len(nu_bins)-1+i] =  np.var(np.log10(tarray)) /10.
             array[np.isnan(array)] = 0
         return np.atleast_2d(array)
 
@@ -91,7 +92,7 @@ class NuPeakCalculator(object):
         out[1] = np.exp(out[1])
         print('Predict Nu-Peak of {} +- {}'.format(out[0], out[1]))
         if return_sed:
-            return np.array([in_data[0][:len(nu_bins)], in_data[0][len(nu_bins):]]), out
+            return np.array([in_data[0][:len(nu_bins)-1], in_data[0][len(nu_bins)-1:]]), out
         else:
             return out
 
