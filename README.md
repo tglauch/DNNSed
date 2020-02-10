@@ -10,10 +10,10 @@ The spectral energy distribution (SED) of blazars consinsts in an ideal case of 
 # How to install
 
 # How to use
-'''
+```
 from DNNSed import NuPeakCalculator
 nu_peak_res = nu_peak.do_classification(sed_file_path, dec=src_dec,
                                         exclude_nu_band=[],
                                         mask_catalog=['DEBL', 'SPIRE250', 'SPIRE350', 'SPIRE500'],
                                         return_sed = False, verbose=True)
-'''
+```
