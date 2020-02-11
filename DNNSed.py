@@ -52,7 +52,6 @@ class NuPeakCalculator(object):
         return
 
     def prepare_data(self, sed, exclude_nu_band=[], mask_catalog=['DEBL']):
-        print(sed['f4'])
         if len(sed['f4']) == 0:
             return None
         cat_nu_mask = np.array([True] * len(sed['f4']))
