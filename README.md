@@ -9,6 +9,18 @@ The spectral energy distribution (SED) of blazars consinsts in an ideal case of 
 
 # How to install
 
+The package can be easily installed using the pip package manager 
+
+```pip install git+https://github.com/tglauch/DNNSed```
+
+Alternatively download the package and run python install
+
+``` 
+git clone https://github.com/tglauch/DNNSed
+cd DNNSed
+python setup.py install
+```
+
 # How to use
 
 DNNSed is optimized for the usage with input files as produced by the VOU-Blazar Tool. The corresponding syntax is
