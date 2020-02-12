@@ -7,6 +7,9 @@ import setuptools
 with open("README.md") as readme:
     long_description = readme.read()
 
+    
+print(setuptools.find_packages())
+
 setuptools.setup(
     name="DNNSed",
     version="0.9",
