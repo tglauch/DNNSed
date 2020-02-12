@@ -85,7 +85,7 @@ class NuPeakCalculator(object):
         ''' dec in degrees '''
         idata = np.genfromtxt(sed_path, skip_header=4, usecols = [0,1,2,3,6],
                           dtype=[np.float, np.float, np.float, np.float, object])
-        idata = np.atleast_2d(idata)
+        idata = np.atleast_1d(idata)
         in_data = self.prepare_data(idata, mask_catalog=mask_catalog,
                                     exclude_nu_band=exclude_nu_band)
         if in_data is None:
