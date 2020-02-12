@@ -35,5 +35,5 @@ setuptools.setup(
         'numpy>1.14',
         'scipy>1.2.0'],
     packages = setuptools.find_packages(),
-    package_data={"i3deepice": ["models/*.h5"]},
+    package_data={"DNNSed": ["models/*.h5"]},
     )
