@@ -7,7 +7,7 @@ import setuptools
 with open("README.md") as readme:
     long_description = readme.read()
 
-    
+print('AHA') 
 print(setuptools.find_packages())
 
 setuptools.setup(
@@ -29,7 +29,7 @@ setuptools.setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: Unix",
-        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering"
         ],
     python_requires=">=2.7",
