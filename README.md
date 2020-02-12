@@ -33,7 +33,7 @@ DNNSed is optimized for the usage with input files as produced by the VOU-Blazar
 for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and catalog must exist in the input file. After generation of the input file the nu-peak classification can be called as follows
 
 ```
-from DNNSed import NuPeakCalculator
+from DNNSed.DNNnupeak import NuPeakCalculator 
 nu_peak = NuPeakCalculator(src_dec)
 nu_peak_res = nu_peak.do_classification(sed_file_path, dec=src_dec,
                                         exclude_nu_band=[],
