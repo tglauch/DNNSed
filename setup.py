@@ -35,7 +35,9 @@ setuptools.setup(
     install_requires=[
         'tensorflow>=1.5,<2.0',
         'numpy>1.14',
-        'scipy>1.2.0'],
+        'scipy>1.2.0',
+        'keras>2.0.0'],
     packages = setuptools.find_packages(),
-    package_data={"DNNSed": ["models/*.h5"]},
+    package_data={"DNNSed": ["models/*.h5",
+                             "examples/*"]},
     )
