@@ -34,7 +34,7 @@ for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and cat
 
 ```
 from DNNSed.DNNnupeak import NuPeakCalculator 
-nu_peak = NuPeakCalculator(src_dec)
+nu_peak = NuPeakCalculator(dec=src_dec) #dec in degrees
 nu_peak_res = nu_peak.do_classification(sed_file_path, dec=src_dec,
                                         exclude_nu_band=[],
                                         mask_catalog=['DEBL', 'SPIRE250',
