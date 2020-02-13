@@ -1,10 +1,11 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 import numpy as np
 import keras
 import keras.layers
 import keras.backend as K
 from keras.models import load_model
 import keras.losses
-import os
 import warnings
 
 def gaussian_nll(ytrue, ypreds):
