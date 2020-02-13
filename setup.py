@@ -7,8 +7,6 @@ import setuptools
 with open("README.md") as readme:
     long_description = readme.read()
 
-print('AHA')
-print(setuptools.find_packages())
 setuptools.setup(
     name="DNNSed",
     version="0.9",
@@ -38,6 +36,6 @@ setuptools.setup(
         'scipy>1.2.0',
         'keras>2.0.0'],
     packages = setuptools.find_packages(),
-    package_data={"DNNSed": ["models/*.h5",
+    package_data={"DNNSed": ["models/*/*.h5",
                              "examples/*"]},
     )
