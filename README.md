@@ -1,9 +1,9 @@
-# DNNSed
+# DNNSed - A tool to auotmatically calculate nu-peak & redshift of blazars
 
-The spectral energy distribution (SED) of blazars consinsts in an ideal case of two bumps where the first bump is due to synchroton emission of accelerated particles in the jet. Hence the position of the first bump, the nu-peak, provides important information about the nature and the energetics of the object. In most real world examples fitting the nu-peak is somewhat challenging due to sparse data and the background emission of the galaxy and the accretion of the disk. This project provides an easy to use deep-learning based nu-peak estimator that has several advantages
+The spectral energy distribution (SED) of blazars consinsts in an ideal case of two bumps where the first bump is due to synchroton emission of accelerated particles in the jet. Hence the position of the first bump, the nu-peak, provides important information about the nature and the energetics of the object. Whenever the non-thermal emission of the jet isn't too strong the SED also shows feactures from the hot gas in the galaxy and the accretion on the disk. While this is a background for the fit of the nu-peak it can be used to estimate the redshift of the object. This project provides an easy to use deep-learning based nu-peak estimator that has several advantages
 
-- *Automatized* prediction of the nu-peak in less than 100ms per source (even on a CPU)
-- *Stability* against sparse data and background emission
+- *Automatized* prediction of the nu-peak & redshift in less than 100ms per source (even on a CPU)
+- *Stability* against sparse data and background emission features
 - *Reliable* error estimation
 
 
@@ -33,13 +33,21 @@ DNNSed is optimized for the usage with input files as produced by the VOU-Blazar
 for usage with the DNN classifier at least Frequency, nufnu, nufnu unc., and catalog must exist in the input file. If you haven't installed VOU Blazar it is recommended that you fetch the SED file directly from OpenUniverse (http://www.openuniverse.asi.it/).  After generation of the input file the nu-peak classification can be called as follows (also compare the script `simple_example.py` in `/examples/`)
 
 ```
-from DNNSed.DNNnupeak import NuPeakCalculator 
-nu_peak = NuPeakCalculator(dec=src_dec) #dec in degrees
-nu_peak_res = nu_peak.do_classification(sed_file_path, dec=src_dec,
-                                        exclude_nu_band=[],
-                                        mask_catalog=['DEBL', 'SPIRE250',
-                                                      'SPIRE350', 'SPIRE500'],
-                                        return_sed = False, verbose=True)
+from DNNSed.DNNnupeak import NuPeakCalculator
+from DNNSed.DNNredshift import RedshiftCalculator
+
+
+src_dec = declination_of_the_source_in_degrees
+nu_peak = NuPeakCalculator(dec=src_dec)
+redshift = RedshiftCalculator(dec=src_dec)
+
+nu_peak = nu_peak.make_prediction(path_to_sed_file, dec=src_dec,
+                                  exclude_nu_band=[], mask_catalog=['DEBL'],
+                                  return_sed = False, verbose=True)
+
+redshift = redshift.make_prediction(path_to_sed_file, dec=src_dec,
+                                    exclude_nu_band=[], mask_catalog=['DEBL'],
+                                    return_sed = False, verbose=True)
 ```
 
 the nu_peak_res output variable contains two numbers 
