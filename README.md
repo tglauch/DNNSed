@@ -53,6 +53,6 @@ redshift = redshift.make_prediction(path_to_sed_file, dec=src_dec,
 the nu_peak_res output variable contains two numbers 
 
 ```
-nu_peak_res[0] --> estimated nu-peak
-nu_peak_res[1] --> 68% uncertainty on the nu-peak
+nu_peak[0] --> estimated nu-peak
+nu_peak[1] --> 68% uncertainty on the nu-peak
 ```
