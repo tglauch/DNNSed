@@ -47,8 +47,9 @@ class BaseCalculator(object):
     def add_model(self, dec):
         ind = self.get_model_pos_ind(dec)
         path = os.path.join(self.__model_path, 'dec_'+str(ind)+'.h5')
-        print('Load Model {}'.format(path))
-        self.__models[ind] = load_model(path, custom_objects={'gaussian_nll': gaussian_nll})
+        if self.__models[ind] == []:
+            print('Load Model {}'.format(path))
+            self.__models[ind] = load_model(path, custom_objects={'gaussian_nll': gaussian_nll})
         return
 
     def prepare_data(self, sed, exclude_nu_band=[], mask_catalog=['DEBL']):
